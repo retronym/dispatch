@@ -16,8 +16,20 @@ object Dispatch extends Build {
           "org.scala-tools.testing" % "specs_2.9.0-1" % "1.6.8" % "test"
         case "2" :: "9" :: _ =>
           "org.scala-tools.testing" % "specs_2.9.1" % "1.6.9" % "test"
+        case "2" :: "11" :: _ =>
+          // TODO Update to "org.specs2" % "specs2_2.11.0-M8" % "2.3.7" % "test"
+          // This is binary incompatible with 2.11, but at least lets up check
+          // that test:compile succeeds.
+          "org.scala-tools.testing" % "specs_2.10" % "1.6.9" % "test"
         case _ => "org.scala-tools.testing" %% "specs" % "1.6.9" % "test"
       })
+    },
+    libraryDependencies <++= (scalaVersion) { sv =>
+      sv.split("[.-]").toList match {
+        case "2" :: "11" :: _ =>
+          List("org.scala-lang" % "scala-library-all" % sv) // for XML
+        case _ => Nil
+      }
     },
     publishMavenStyle := true,
     publishTo <<= version { (v: String) =>
